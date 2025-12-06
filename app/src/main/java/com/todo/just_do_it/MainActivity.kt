@@ -1,47 +1,44 @@
 package com.todo.just_do_it
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.todo.just_do_it.ui.theme.JustDoItTheme
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.todo.just_do_it.model.TodoView
+import com.todo.just_do_it.screen.TodoList
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: TodoView by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
-            JustDoItTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            val todos by viewModel.todos.collectAsState()
+
+            TodoList(
+                todos = todos,
+                onAddClick = { title, desc -> viewModel.addTodo(title, desc) },
+                onDoneClick = { todo -> viewModel.toggleDone(todo) },
+                onDeleteClick = { todo -> viewModel.deleteTodo(todo) },
+                onTodoClick = {
+
                 }
-            }
+            )
         }
+
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    JustDoItTheme {
-        Greeting("Android")
-    }
-}
+
+
+
+
+
+
+
+

@@ -16,7 +16,7 @@ interface TodoDao {
 
     // get single to do by id
     @Query("SELECT * FROM todos WHERE id = :id")
-    suspend fun getTodoById(id: Int): Todo
+    suspend fun getTodoById(id: Int): Todo?
 
     // insert a new to do
     @Insert

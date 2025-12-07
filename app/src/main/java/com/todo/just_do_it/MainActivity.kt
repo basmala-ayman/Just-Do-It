@@ -23,13 +23,9 @@ class MainActivity : ComponentActivity() {
                 todos = todos,
                 onAddClick = { title, desc -> viewModel.addTodo(title, desc) },
                 onDoneClick = { todo -> viewModel.toggleDone(todo) },
-                onDeleteClick = { todo -> viewModel.deleteTodo(todo) },
-                onTodoClick = {
-
-                }
+                onDeleteClick = { todo -> viewModel.deleteTodo(todo) }
             )
         }
-
     }
 }
 

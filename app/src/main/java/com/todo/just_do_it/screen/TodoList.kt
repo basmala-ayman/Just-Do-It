@@ -14,11 +14,11 @@ import com.todo.just_do_it.data.Todo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoList(
+    // declare functions and variables we use for this screen
     todos: List<Todo>,
     onAddClick: (String, String?) -> Unit,
     onDoneClick: (Todo) -> Unit,
     onDeleteClick: (Todo) -> Unit,
-    onTodoClick: (Int) -> Unit
 ) {
     var titleInput by rememberSaveable {
         mutableStateOf("")
@@ -86,9 +86,7 @@ fun TodoList(
 
                             Text(
                                 text = todo.title,
-                                modifier = Modifier
-                                    .clickable { onTodoClick(todo.id) }
-                                    .padding(vertical = 4.dp)
+                                modifier = Modifier.padding(vertical = 4.dp)
                             )
                         }
                         Text(
@@ -103,8 +101,6 @@ fun TodoList(
             }
         }
     }
-
-
 }
 
 

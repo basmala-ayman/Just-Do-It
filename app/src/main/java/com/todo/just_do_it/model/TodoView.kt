@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.security.auth.Destroyable
 
 class TodoView(application: Application) : AndroidViewModel(application) {
 
@@ -19,7 +18,7 @@ class TodoView(application: Application) : AndroidViewModel(application) {
     init {
         val db = TodoDatabase.getInstance(application)
         repo = TodoRepo(db.todoDao())
-        observeTodos() // to load all todos
+        loadAllTodos() // to load all todos to appear once app is running
     }
 
     // MutableStateFlow (List of objects) -> anyone listening to it is notified whenever the value changes
@@ -32,30 +31,11 @@ class TodoView(application: Application) : AndroidViewModel(application) {
     // asStateFlow -> make a wrapper of _todos
     val todos: StateFlow<List<Todo>> = _todos.asStateFlow()
 
-    private fun observeTodos() {
+    private fun loadAllTodos() {
         viewModelScope.launch {
             // to load all todos on _todos
             repo.getAllTodos().collect { list -> _todos.value = list }
         }
-    }
-
-    // for a specific todo -> when user click on it
-    private val _selectedTodo = MutableStateFlow<Todo?>(null)
-    val selectedTodo: StateFlow<Todo?> = _selectedTodo.asStateFlow()
-
-    fun showSpecificTodo(id: Int) {
-        viewModelScope.launch {
-            val todo = try {
-                repo.getTodoById(id)
-            } catch (e: Exception) {
-                null
-            }
-            _selectedTodo.value = todo
-        }
-    }
-
-    fun clearSelected() {
-        _selectedTodo.value = null
     }
 
     fun addTodo(title: String, description: String? = null) {
@@ -72,12 +52,6 @@ class TodoView(application: Application) : AndroidViewModel(application) {
             // make a copy from the same todo with opposite done status
             val toggledTodo = todo.copy(isDone = !todo.isDone)
             repo.updateTodo(toggledTodo)
-        }
-    }
-
-    fun updateTodo(todo: Todo) {
-        viewModelScope.launch {
-            repo.updateTodo(todo)
         }
     }
 

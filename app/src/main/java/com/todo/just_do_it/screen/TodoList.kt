@@ -19,6 +19,7 @@ fun TodoList(
     onAddClick: (String, String?) -> Unit,
     onDoneClick: (Todo) -> Unit,
     onDeleteClick: (Todo) -> Unit,
+    onClickToDO:(Int)->Unit
 ) {
     var titleInput by rememberSaveable {
         mutableStateOf("")
@@ -75,6 +76,7 @@ fun TodoList(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clickable{onClickToDO(todo.id)}
                             .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {

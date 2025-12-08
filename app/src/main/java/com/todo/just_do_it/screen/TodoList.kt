@@ -31,6 +31,7 @@ fun TodoList(
     onAddClick: (String, String?) -> Unit,
     onDoneClick: (Todo) -> Unit,
     onDeleteClick: (Todo) -> Unit,
+    onClickToDO:(Int)->Unit
 ) {
     var titleInput by rememberSaveable {
         mutableStateOf("")

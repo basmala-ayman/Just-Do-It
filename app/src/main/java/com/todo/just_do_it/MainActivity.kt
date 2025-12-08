@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.todo.just_do_it.model.TodoModel
 import com.todo.just_do_it.screen.TodoList
+import com.todo.just_do_it.ui.theme.JustDoItTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModel: TodoModel by viewModels()
@@ -17,8 +18,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val todos by viewModel.todos.collectAsState()
+            JustDoItTheme() {
 
+            val todos by viewModel.todos.collectAsState()
             TodoList(
                 todos = todos,
                 onAddClick = { title, desc -> viewModel.addTodo(title, desc) },
@@ -28,9 +30,8 @@ class MainActivity : ComponentActivity() {
                     val intent =Intent(this,EditToDoActivity::class.java)
                     intent.putExtra("id" , id)
                     startActivity(intent)
-                }
-
-            )
+                })
+            }
         }
     }
 }

@@ -84,9 +84,13 @@ fun TodoList(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("New Task", fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.secondary)
+                    Text(
+                        "New Task",
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
 
                     // Styled Title Input

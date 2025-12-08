@@ -138,7 +138,8 @@ fun TodoList(
                     TodoItemCard(
                         todo = todo,
                         onDoneClick = onDoneClick,
-                        onDeleteClick = onDeleteClick
+                        onDeleteClick = onDeleteClick,
+                        onCardClick = { onClickToDO(todo.id) }
                     )
                 }
             }
@@ -146,13 +147,15 @@ fun TodoList(
     }
 }
 
-// --- Helper Composable for each Item ---
-// Separating this makes the code cleaner and easier to read!
+
+
+
 @Composable
 fun TodoItemCard(
     todo: Todo,
     onDoneClick: (Todo) -> Unit,
-    onDeleteClick: (Todo) -> Unit
+    onDeleteClick: (Todo) -> Unit,
+    onCardClick: () -> Unit
 ) {
     // Animate color change when done
     val backgroundColor by animateColorAsState(
@@ -161,6 +164,7 @@ fun TodoItemCard(
     )
 
     Card(
+        onClick = { onCardClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
@@ -172,7 +176,6 @@ fun TodoItemCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Checkbox
             Checkbox(
                 checked = todo.isDone,
                 onCheckedChange = { onDoneClick(todo) },
@@ -184,18 +187,15 @@ fun TodoItemCard(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Text Content
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = todo.title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    // Strike through if done
                     textDecoration = if (todo.isDone) TextDecoration.LineThrough else null,
                     color = if (todo.isDone) Color.Gray else MaterialTheme.colorScheme.onSurface
                 )
 
-                // Only show description if it exists
                 if (!todo.description.isNullOrBlank()) {
                     Text(
                         text = todo.description,
@@ -206,7 +206,6 @@ fun TodoItemCard(
                 }
             }
 
-            // Delete Button (Icon only)
             IconButton(onClick = { onDeleteClick(todo) }) {
                 Icon(
                     imageVector = Icons.Default.Delete,

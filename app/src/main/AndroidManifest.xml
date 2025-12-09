@@ -25,6 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".EditToDoActivity"
+            android:exported="false"
+            android:label="Edit Task"
+            android:theme="@style/Theme.JustDoIt" />
     </application>
 
 </manifest>

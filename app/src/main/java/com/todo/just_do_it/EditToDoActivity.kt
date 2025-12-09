@@ -28,7 +28,6 @@ class EditToDoActivity : ComponentActivity() {
 
             selectedTodo = todoModel.getToDoById(todoId)
 
-
             setContent {
                 JustDoItTheme() {
 

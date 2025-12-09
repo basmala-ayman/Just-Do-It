@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class TodoView(application: Application) : AndroidViewModel(application) {
+class TodoModel(application: Application) : AndroidViewModel(application) {
 
     private val db = TodoDatabase.getInstance(application)
     private val firestore = FirestoreRepo()
@@ -38,7 +38,8 @@ class TodoView(application: Application) : AndroidViewModel(application) {
     // read-only version of _todos (for ui to be able to get data but not modify it)
     // asStateFlow -> make a wrapper of _todos
     val todos: StateFlow<List<Todo>> = _todos.asStateFlow()
-
+    private val _selectedTodo = MutableStateFlow<Todo?>(null)
+    val selectedTodo = _selectedTodo.asStateFlow()
     private fun loadAllTodos() {
         viewModelScope.launch {
             // to load all todos on _todos
@@ -68,4 +69,21 @@ class TodoView(application: Application) : AndroidViewModel(application) {
             repo.deleteTodo(todo)
         }
     }
-}
+
+    suspend fun getToDoById(id:Int):Todo ?{
+
+            return repo.getTodoById(id)
+    }
+
+     fun updateTodo(todo: Todo) {
+        viewModelScope.launch {
+            repo.updateTodo(todo)
+        }
+    }
+    fun loadTodoById(id: Int) {
+        viewModelScope.launch {
+            val todo = repo.getTodoById(id)
+            _selectedTodo.value = todo
+        }
+    }
+  }

@@ -6,24 +6,31 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.todo.just_do_it.model.TodoView
+import com.todo.just_do_it.model.TodoModel
 import com.todo.just_do_it.screen.TodoList
+import com.todo.just_do_it.ui.theme.JustDoItTheme
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: TodoView by viewModels()
+    private val viewModel: TodoModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val todos by viewModel.todos.collectAsState()
+            JustDoItTheme() {
 
+            val todos by viewModel.todos.collectAsState()
             TodoList(
                 todos = todos,
                 onAddClick = { title, desc -> viewModel.addTodo(title, desc) },
                 onDoneClick = { todo -> viewModel.toggleDone(todo) },
-                onDeleteClick = { todo -> viewModel.deleteTodo(todo) }
-            )
+                onDeleteClick = { todo -> viewModel.deleteTodo(todo) },
+                onClickToDO={id->
+                    val intent =Intent(this,EditToDoActivity::class.java)
+                    intent.putExtra("id" , id)
+                    startActivity(intent)
+                })
+            }
         }
     }
 }

@@ -5,6 +5,8 @@ plugins {
 
     // Apply the Compose Gradle plugin (version comes from your version catalog / libs.versions.toml)
     alias(libs.plugins.kotlin.compose)
+
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -64,6 +66,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.firebase.firestore)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -77,7 +80,20 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Room (kept as you had it)
-    implementation("androidx.room:room-runtime:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+//    implementation("androidx.room:room-runtime:2.6.1")
+//    kapt("androidx.room:room-compiler:2.6.1")
+//    implementation("androidx.room:room-ktx:2.6.1")
+
+    // Room — update to a newer stable version
+    implementation("androidx.room:room-runtime:2.8.4")
+    kapt("androidx.room:room-compiler:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4")
+    
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
+    // Add Firestore and coroutines helper (BoM provides versions)
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
+
 }

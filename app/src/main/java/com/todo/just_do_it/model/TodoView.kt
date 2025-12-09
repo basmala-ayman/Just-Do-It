@@ -3,6 +3,7 @@ package com.todo.just_do_it.model
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.todo.just_do_it.data.FirestoreRepo
 import com.todo.just_do_it.data.Todo
 import com.todo.just_do_it.data.TodoDatabase
 import com.todo.just_do_it.data.TodoRepo
@@ -13,11 +14,18 @@ import kotlinx.coroutines.launch
 
 class TodoView(application: Application) : AndroidViewModel(application) {
 
-    private val repo: TodoRepo
+    private val db = TodoDatabase.getInstance(application)
+    private val firestore = FirestoreRepo()
+    private val repo = TodoRepo(db.todoDao(), firestore)
+//    private val repo: TodoRepo
+//
+//    init {
+//        val db = TodoDatabase.getInstance(application)
+//        repo = TodoRepo(db.todoDao())
+//        loadAllTodos() // to load all todos to appear once app is running
+//    }
 
     init {
-        val db = TodoDatabase.getInstance(application)
-        repo = TodoRepo(db.todoDao())
         loadAllTodos() // to load all todos to appear once app is running
     }
 

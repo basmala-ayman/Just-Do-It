@@ -1,6 +1,5 @@
 package com.todo.just_do_it
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,7 +27,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 
 
 

@@ -1,17 +1,14 @@
 package com.todo.just_do_it.data
 
 import android.util.Log
-import androidx.compose.animation.core.rememberTransition
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 
 class FirestoreSyncManager(private val todoDao: TodoDao) {
     private val db = FirebaseFirestore.getInstance()
@@ -63,24 +60,6 @@ class FirestoreSyncManager(private val todoDao: TodoDao) {
                     }
                 }
             }
-//            CoroutineScope(Dispatchers.IO).launch {
-//                val docs = snapshot.documents
-//                for (doc in docs) {
-//                    val id = doc.id
-//                    val title = doc.getString("title") ?: continue
-//                    val description = doc.getString("description")
-//                    val isDone = doc.getBoolean("isDone") ?: false
-//                    val time = doc.getLong("time") ?: System.currentTimeMillis()
-//                    val todo = Todo(
-//                        id = id,
-//                        title = title,
-//                        description = description,
-//                        isDone = isDone,
-//                        time = time
-//                    )
-//                    todoDao.insertTodo(todo)
-//                }
-//            }
         }
         Log.d("FirestoreSync", "Started listening to Firestore 'todos'")
 

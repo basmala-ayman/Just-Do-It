@@ -14,28 +14,16 @@ abstract class TodoDatabase : RoomDatabase() {
         private var INSTANCE: TodoDatabase? = null
 
         fun getInstance(context: Context): TodoDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    TodoDatabase::class.java,
-                    "todo_db"
-                ).build()
-                INSTANCE = instance
-                instance
+            if (INSTANCE == null) {
+                synchronized(TodoDatabase::class) {
+                    INSTANCE = Room.databaseBuilder(
+                        context.applicationContext,
+                        TodoDatabase::class.java,
+                        "todo_db"
+                    ).build()
+                }
             }
+            return INSTANCE!!
         }
-
-//        fun getInstance(context: Context): TodoDatabase {
-//            if (INSTANCE == null) {
-//                synchronized(TodoDatabase::class) {
-//                    INSTANCE = Room.databaseBuilder(
-//                        context.applicationContext,
-//                        TodoDatabase::class.java,
-//                        "todo_db"
-//                    ).build()
-//                }
-//            }
-//            return INSTANCE!!
-//        }
     }
 }

@@ -38,8 +38,6 @@ class TodoRepo(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        // ensure local deleted as well
-//        dao.deleteTodo(todo)
     }
 
 }

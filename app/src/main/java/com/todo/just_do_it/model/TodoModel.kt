@@ -3,6 +3,7 @@ package com.todo.just_do_it.model
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.todo.just_do_it.data.FirestoreRepo
 import com.todo.just_do_it.data.Todo
 import com.todo.just_do_it.data.TodoDatabase
 import com.todo.just_do_it.data.TodoRepo
@@ -13,11 +14,11 @@ import kotlinx.coroutines.launch
 
 class TodoModel(application: Application) : AndroidViewModel(application) {
 
-    private val repo: TodoRepo
+    private val db = TodoDatabase.getInstance(application)
+    private val firestore = FirestoreRepo()
+    private val repo = TodoRepo(db.todoDao(), firestore)
 
     init {
-        val db = TodoDatabase.getInstance(application)
-        repo = TodoRepo(db.todoDao())
         loadAllTodos() // to load all todos to appear once app is running
     }
 
@@ -30,8 +31,7 @@ class TodoModel(application: Application) : AndroidViewModel(application) {
     // read-only version of _todos (for ui to be able to get data but not modify it)
     // asStateFlow -> make a wrapper of _todos
     val todos: StateFlow<List<Todo>> = _todos.asStateFlow()
-    private val _selectedTodo = MutableStateFlow<Todo?>(null)
-    val selectedTodo = _selectedTodo.asStateFlow()
+
     private fun loadAllTodos() {
         viewModelScope.launch {
             // to load all todos on _todos
@@ -62,20 +62,13 @@ class TodoModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun getToDoById(id:Int):Todo ?{
-
-            return repo.getTodoById(id)
+    suspend fun getToDoById(id: String): Todo? {
+        return repo.getTodoById(id)
     }
 
-     fun updateTodo(todo: Todo) {
+    fun updateTodo(todo: Todo) {
         viewModelScope.launch {
             repo.updateTodo(todo)
         }
     }
-    fun loadTodoById(id: Int) {
-        viewModelScope.launch {
-            val todo = repo.getTodoById(id)
-            _selectedTodo.value = todo
-        }
-    }
-  }
+}

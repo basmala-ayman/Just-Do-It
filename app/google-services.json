@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "564805269758",
+    "project_id": "just-do-it-ef745",
+    "storage_bucket": "just-do-it-ef745.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564805269758:android:0e7876838ae72c1051cdaf",
+        "android_client_info": {
+          "package_name": "com.todo.just_do_it"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbBe0VVIGGhkt8vwr2HRnUjEikNWSIxMY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,7 @@
 package com.todo.just_do_it
+
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -10,30 +12,34 @@ import kotlinx.coroutines.launch
 import com.todo.just_do_it.screen.EditToDoScreen
 import com.todo.just_do_it.ui.theme.JustDoItTheme
 
-class EditToDoActivity: ComponentActivity()  {
+class EditToDoActivity : ComponentActivity() {
     private val todoModel: TodoModel by viewModels()
     private var selectedTodo: Todo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val todoId = intent.getIntExtra("id", -1)
-
+        val todoId = intent.getStringExtra("id")
+        if (todoId == null) {
+            finish()
+            return
+        }
 
         lifecycleScope.launch {
-            selectedTodo=todoModel.getToDoById(todoId)
+
+            selectedTodo = todoModel.getToDoById(todoId)
 
             setContent {
-            JustDoItTheme(){
+                JustDoItTheme() {
 
-                EditToDoScreen(
-                    todo = selectedTodo,
-                    onSave = {updatedTodo ->
-                        todoModel.updateTodo(updatedTodo)
-                        finish()
-                    },
-                    onBack = { finish() }
-                )
-            }
+                    EditToDoScreen(
+                        todo = selectedTodo,
+                        onSave = { updatedTodo ->
+                            todoModel.updateTodo(updatedTodo)
+                            finish()
+                        },
+                        onBack = { finish() }
+                    )
+                }
             }
         }
 

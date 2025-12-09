@@ -20,22 +20,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             JustDoItTheme() {
 
-            val todos by viewModel.todos.collectAsState()
-            TodoList(
-                todos = todos,
-                onAddClick = { title, desc -> viewModel.addTodo(title, desc) },
-                onDoneClick = { todo -> viewModel.toggleDone(todo) },
-                onDeleteClick = { todo -> viewModel.deleteTodo(todo) },
-                onClickToDO={id->
-                    val intent =Intent(this,EditToDoActivity::class.java)
-                    intent.putExtra("id" , id)
-                    startActivity(intent)
-                })
+                val todos by viewModel.todos.collectAsState()
+                TodoList(
+                    todos = todos,
+                    onAddClick = { title, desc -> viewModel.addTodo(title, desc) },
+                    onDoneClick = { todo -> viewModel.toggleDone(todo) },
+                    onDeleteClick = { todo -> viewModel.deleteTodo(todo) },
+                    onClickToDO = { id: String ->
+                        val intent = Intent(this, EditToDoActivity::class.java)
+                        intent.putExtra("id", id)
+                        startActivity(intent)
+                    })
             }
         }
     }
 }
-
 
 
 

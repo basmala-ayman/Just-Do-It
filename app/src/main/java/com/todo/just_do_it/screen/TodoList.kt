@@ -1,14 +1,26 @@
 package com.todo.just_do_it.screen
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.todo.just_do_it.data.Todo
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,74 +43,104 @@ fun TodoList(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Just Do It - To Do App") }
+                title = {
+                    Text(
+                        "Just Do It ✨",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                if (titleInput.isNotBlank()) {
-                    onAddClick(titleInput, descriptionInput.ifBlank { null })
-                    titleInput = ""
-                    descriptionInput = ""
-                }
-            }) {
-                Text("Add")
+            FloatingActionButton(
+                onClick = {
+                    if (titleInput.isNotBlank()) {
+                        onAddClick(titleInput, descriptionInput.ifBlank { null })
+                        titleInput = ""
+                        descriptionInput = ""
+                    }
+                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
             }
         }
-    ) { inner ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(inner)
-                .padding(12.dp)
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background) // Use our Cream color
+                .padding(16.dp)
         ) {
+
             // title input field
-            OutlinedTextField(
-                value = titleInput,
-                onValueChange = { titleInput = it },
-                label = { Text("Title") },
+            Card(
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        "New Task",
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Styled Title Input
+                    OutlinedTextField(
+                        value = titleInput,
+                        onValueChange = { titleInput = it },
+                        label = { Text("What needs to be done?") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+
+                    // Styled Description Input
+                    OutlinedTextField(
+                        value = descriptionInput,
+                        onValueChange = { descriptionInput = it },
+                        label = { Text("Details (optional)") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        maxLines = 3
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            Text(
+                "Your Tasks",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
             )
 
-            Spacer(Modifier.height(8.dp))
-
-            // description input field
-            OutlinedTextField(
-                value = descriptionInput,
-                onValueChange = { descriptionInput = it },
-                label = { Text("Description") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            LazyColumn {
+            // --- List Section ---
+            LazyColumn(
+                contentPadding = PaddingValues(bottom = 80.dp), // Space for FAB
+                verticalArrangement = Arrangement.spacedBy(12.dp) // Space between items
+            ) {
                 items(todos) { todo ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable{onClickToDO(todo.id)}
-                            .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(modifier = Modifier.weight(1f)) {
-                            // done checkbox
-                            Checkbox(checked = todo.isDone, onCheckedChange = { onDoneClick(todo) })
-
-                            Spacer(Modifier.width(8.dp))
-
-                            Text(
-                                text = todo.title,
-                                modifier = Modifier.padding(vertical = 4.dp)
-                            )
-                        }
-                        Text(
-                            text = "Delete",
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                                .clickable { onDeleteClick(todo) }
-                        )
-                    }
-                    Divider()
+                    TodoItemCard(
+                        todo = todo,
+                        onDoneClick = onDoneClick,
+                        onDeleteClick = onDeleteClick,
+                        onCardClick = { onClickToDO(todo.id) }
+                    )
                 }
             }
         }
@@ -108,8 +150,69 @@ fun TodoList(
 
 
 
+@Composable
+fun TodoItemCard(
+    todo: Todo,
+    onDoneClick: (Todo) -> Unit,
+    onDeleteClick: (Todo) -> Unit,
+    onCardClick: () -> Unit
+) {
+    // Animate color change when done
+    val backgroundColor by animateColorAsState(
+        if (todo.isDone) MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
+        else MaterialTheme.colorScheme.surface
+    )
 
+    Card(
+        onClick = { onCardClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = todo.isDone,
+                onCheckedChange = { onDoneClick(todo) },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = MaterialTheme.colorScheme.primary,
+                    uncheckedColor = MaterialTheme.colorScheme.secondary
+                )
+            )
 
+            Spacer(modifier = Modifier.width(8.dp))
 
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = todo.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    textDecoration = if (todo.isDone) TextDecoration.LineThrough else null,
+                    color = if (todo.isDone) Color.Gray else MaterialTheme.colorScheme.onSurface
+                )
 
+                if (!todo.description.isNullOrBlank()) {
+                    Text(
+                        text = todo.description,
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        maxLines = 2
+                    )
+                }
+            }
 
+            IconButton(onClick = { onDeleteClick(todo) }) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+    }
+}

@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,6 +37,9 @@ fun TodoList(
     }
     var descriptionInput by rememberSaveable {
         mutableStateOf("")
+    }
+    var taskDelete by remember {
+        mutableStateOf<Todo?>(null)
     }
 
     Scaffold(
@@ -76,6 +80,32 @@ fun TodoList(
                 .background(MaterialTheme.colorScheme.background) // Use our Cream color
                 .padding(16.dp)
         ) {
+
+            if (taskDelete != null) {
+                AlertDialog(
+                    onDismissRequest = {taskDelete = null},
+                    icon = { Icon(Icons.Default.Warning, contentDescription = null)},
+                    title = { Text("Delete Task")},
+                    text = { Text("Are you sure you want to delete this task?")},
+                    confirmButton = {
+                        TextButton(onClick = {
+                            onDeleteClick(taskDelete!!)
+                            taskDelete = null
+                        }) {
+                            Text("Yes, Delete", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+
+                    dismissButton = {
+                        TextButton(onClick = { taskDelete = null }) {
+                            Text("No, Cancel")
+                        }
+                    }
+
+                )
+            }
+
+
 
             // title input field
             Card(
@@ -127,7 +157,7 @@ fun TodoList(
                 modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
             )
 
-            // --- List Section ---
+            // list Section
             LazyColumn(
                 contentPadding = PaddingValues(bottom = 80.dp), // Space for FAB
                 verticalArrangement = Arrangement.spacedBy(12.dp) // Space between items
@@ -136,7 +166,7 @@ fun TodoList(
                     TodoItemCard(
                         todo = todo,
                         onDoneClick = onDoneClick,
-                        onDeleteClick = onDeleteClick,
+                        onDeleteClick = { taskDelete = it },
                         onCardClick = { onClickToDO(todo.id) }
                     )
                 }

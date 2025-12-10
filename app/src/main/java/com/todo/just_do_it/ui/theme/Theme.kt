@@ -2,9 +2,7 @@ package com.todo.just_do_it.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
@@ -12,60 +10,69 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// 1. Define the Dark Color Scheme
-private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryPink,        // We keep the Pink pop!
-    secondary = SecondaryMint,    // We keep the Mint!
-    tertiary = AccentPurple,
-    background = BackgroundDark,  // Dark background
-    surface = SurfaceDark,        // Dark cards
-    onPrimary = Color.White,
-    onSecondary = BackgroundDark,
-    onTertiary = BackgroundDark,
-    onBackground = TextLight,     // White text
-    onSurface = TextLight         // White text on cards
-)
+// --- COLOR DEFINITIONS ---
+// Pink (Default)
+val PinkPrimary = Color(0xFFFF8FA3)
+val PinkSecondary = Color(0xFF80D8C8)
 
-// 2. Define the Light Color Scheme
-private val LightColorScheme = lightColorScheme(
-    primary = PrimaryPink,
-    secondary = SecondaryMint,
-    tertiary = AccentPurple,
-    background = BackgroundCream,
-    surface = SurfaceWhite,
-    onPrimary = Color.White,
-    onSecondary = TextDark,
-    onTertiary = TextDark,
-    onBackground = TextDark,
-    onSurface = TextDark
-)
+// Blue (Ocean)
+val BluePrimary = Color(0xFF42A5F5)
+val BlueSecondary = Color(0xFF90CAF9)
+
+// Green (Nature)
+val GreenPrimary = Color(0xFF66BB6A)
+val GreenSecondary = Color(0xFFA5D6A7)
+
+// Dark / Light Backgrounds
+val DarkBackground = Color(0xFF1C1B1F)
+val LightBackground = Color(0xFFFFF8F0)
 
 @Composable
 fun JustDoItTheme(
-    // Check if the system is in Dark Mode
+    // These inputs control the theme now!
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // We keep dynamicColor FALSE to ensure our Pink/Mint is always used
-    dynamicColor: Boolean = false,
+    themeColor: String = "Pink",
     content: @Composable () -> Unit
 ) {
-    // 3. Pick the right scheme based on the boolean above
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    // 1. Choose the Primary Color based on the name
+    val (primary, secondary) = when (themeColor) {
+        "Blue" -> Pair(BluePrimary, BlueSecondary)
+        "Green" -> Pair(GreenPrimary, GreenSecondary)
+        else -> Pair(PinkPrimary, PinkSecondary) // Default Pink
+    }
 
-    // 4. Update the Status Bar color (Top of phone)
+    // 2. Create the Color Scheme
+    val colorScheme = if (darkTheme) {
+        darkColorScheme(
+            primary = primary,
+            secondary = secondary,
+            background = DarkBackground,
+            surface = Color(0xFF303030), // Dark Cards
+            onPrimary = Color.White
+        )
+    } else {
+        lightColorScheme(
+            primary = primary,
+            secondary = secondary,
+            background = LightBackground,
+            surface = Color.White,
+            onPrimary = Color.White
+        )
+    }
+
+    // 3. Fix Status Bar Color
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.background.toArgb() // Match background
-
-            // If it's light mode, make icons dark. If dark mode, make icons light.
+            window.statusBarColor = colorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // Ensure Type.kt is correct, or use MaterialTheme.typography
+        typography = Typography,
         content = content
     )
 }

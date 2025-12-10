@@ -60,7 +60,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     // Use a Compose BOM version compatible with Kotlin 1.9.x
-    implementation(platform("androidx.compose:compose-bom:2024.04.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.11.00"))
 
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -79,10 +79,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // Room (kept as you had it)
-//    implementation("androidx.room:room-runtime:2.6.1")
-//    kapt("androidx.room:room-compiler:2.6.1")
-//    implementation("androidx.room:room-ktx:2.6.1")
 
     // Room — update to a newer stable version
     implementation("androidx.room:room-runtime:2.8.4")
@@ -105,6 +101,6 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.11.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-
-
+//datastore for user theme settings
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

@@ -11,8 +11,12 @@ import com.todo.just_do_it.model.TodoModel
 import kotlinx.coroutines.launch
 import com.todo.just_do_it.screen.EditToDoScreen
 import com.todo.just_do_it.ui.theme.JustDoItTheme
+import com.todo.just_do_it.util.SettingsStore
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 class EditToDoActivity : ComponentActivity() {
+    val settingsStore = SettingsStore(applicationContext)
     private val todoModel: TodoModel by viewModels()
     private var selectedTodo: Todo? = null
 
@@ -29,20 +33,20 @@ class EditToDoActivity : ComponentActivity() {
             selectedTodo = todoModel.getToDoById(todoId)
 
             setContent {
-                JustDoItTheme() {
+                val isDark by settingsStore.isDarkMode.collectAsState(initial = false)
+                val themeColor by settingsStore.themeColor.collectAsState(initial = "Pink")
 
+                JustDoItTheme(darkTheme = isDark, themeColor = themeColor) {
                     EditToDoScreen(
                         todo = selectedTodo,
                         onSave = { updatedTodo ->
                             todoModel.updateTodo(updatedTodo)
                             finish()
                         },
-                        onBack = { finish() }
+                        onBack = { finish() } // Make sure to add this parameter to EditToDoScreen if you haven't!
                     )
                 }
             }
         }
-
     }
-
 }

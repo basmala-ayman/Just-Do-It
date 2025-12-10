@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.todo.just_do_it.data.Todo
-
+import androidx.compose.material.icons.filled.Settings
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoList(
@@ -30,7 +30,8 @@ fun TodoList(
     onAddClick: (String, String?) -> Unit,
     onDoneClick: (Todo) -> Unit,
     onDeleteClick: (Todo) -> Unit,
-    onClickToDO: (String) -> Unit
+    onClickToDO: (String) -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     var titleInput by rememberSaveable {
         mutableStateOf("")
@@ -57,21 +58,45 @@ fun TodoList(
                 )
             )
         },
+        floatingActionButtonPosition = FabPosition.Center,
+
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    if (titleInput.isNotBlank()) {
-                        onAddClick(titleInput, descriptionInput.ifBlank { null })
-                        titleInput = ""
-                        descriptionInput = ""
-                    }
-                },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp), // Leave some space from the edges
+                horizontalArrangement = Arrangement.SpaceBetween, // Push buttons to Left and Right
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
+                // --- LEFT BUTTON (Settings) ---
+                FloatingActionButton(
+                    onClick = onSettingsClick,
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Settings"
+                    )
+                }
+
+                // --- RIGHT BUTTON (Add Task) ---
+                FloatingActionButton(
+                    onClick = {
+                        if (titleInput.isNotBlank()) {
+                            onAddClick(titleInput, descriptionInput.ifBlank { null })
+                            titleInput = ""
+                            descriptionInput = ""
+                        }
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
+                }
             }
         }
+
     ) { innerPadding ->
         Column(
             modifier = Modifier

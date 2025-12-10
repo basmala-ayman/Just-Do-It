@@ -88,12 +88,23 @@ dependencies {
     implementation("androidx.room:room-runtime:2.8.4")
     kapt("androidx.room:room-compiler:2.8.4")
     implementation("androidx.room:room-ktx:2.8.4")
-    
+
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
     // Add Firestore and coroutines helper (BoM provides versions)
     implementation("com.google.firebase:firebase-firestore")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
+
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+
+    //TESTING DEPENDENCIES
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
 
 }

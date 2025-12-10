@@ -16,11 +16,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 class EditToDoActivity : ComponentActivity() {
-    val settingsStore = SettingsStore(applicationContext)
     private val todoModel: TodoModel by viewModels()
     private var selectedTodo: Todo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+    val settingsStore = SettingsStore(applicationContext)
         super.onCreate(savedInstanceState)
         val todoId = intent.getStringExtra("id")
         if (todoId == null) {
@@ -33,9 +33,11 @@ class EditToDoActivity : ComponentActivity() {
             selectedTodo = todoModel.getToDoById(todoId)
 
             setContent {
+                // 2. Listen
                 val isDark by settingsStore.isDarkMode.collectAsState(initial = false)
                 val themeColor by settingsStore.themeColor.collectAsState(initial = "Pink")
 
+                // 3. Apply Theme
                 JustDoItTheme(darkTheme = isDark, themeColor = themeColor) {
                     EditToDoScreen(
                         todo = selectedTodo,

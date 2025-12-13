@@ -20,7 +20,7 @@ class EditToDoActivity : ComponentActivity() {
     private var selectedTodo: Todo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-    val settingsStore = SettingsStore(applicationContext)
+        val settingsStore = SettingsStore(applicationContext)
         super.onCreate(savedInstanceState)
         val todoId = intent.getStringExtra("id")
         if (todoId == null) {

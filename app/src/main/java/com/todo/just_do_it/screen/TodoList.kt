@@ -32,6 +32,7 @@ fun TodoList(
     onDeleteClick: (Todo) -> Unit,
     onClickToDO: (String) -> Unit,
     onSettingsClick: () -> Unit
+
 ) {
     var titleInput by rememberSaveable {
         mutableStateOf("")
@@ -42,6 +43,10 @@ fun TodoList(
     var taskDelete by remember {
         mutableStateOf<Todo?>(null)
     }
+    var errorMessage by remember {
+        mutableStateOf(false)
+    }
+
 
     Scaffold(
         topBar = {
@@ -87,6 +92,8 @@ fun TodoList(
                             onAddClick(titleInput, descriptionInput.ifBlank { null })
                             titleInput = ""
                             descriptionInput = ""
+                        }else{
+                            errorMessage = true
                         }
                     },
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -128,6 +135,21 @@ fun TodoList(
                     }
 
                 )
+            }
+
+            if (errorMessage){
+                AlertDialog(
+                    onDismissRequest = { errorMessage = false }, // Close if clicked outside
+                    title = { Text("Missing Information 📝") },
+                    text = { Text("Please write the task name before adding.") },
+                    confirmButton = {
+                        TextButton(onClick = { errorMessage = false }) {
+                            Text("OK")
+                        }
+                    },
+                    icon = { Icon(Icons.Default.Warning, contentDescription = null) }
+                )
+
             }
 
 

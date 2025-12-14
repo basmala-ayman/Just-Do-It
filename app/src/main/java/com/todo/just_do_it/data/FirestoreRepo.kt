@@ -5,8 +5,11 @@ import kotlinx.coroutines.tasks.await
 
 class FirestoreRepo {
     private val db = FirebaseFirestore.getInstance()
+
+    // to get our database from firestore
     private val collection = db.collection("todos")
 
+    // save todos on firestore with its format (doc format)
     suspend fun saveTodo(todo: Todo) {
         val map = hashMapOf(
             "id" to todo.id,

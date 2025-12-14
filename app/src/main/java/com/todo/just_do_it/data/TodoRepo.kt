@@ -14,7 +14,9 @@ class TodoRepo(
 
     suspend fun insertTodo(title: String, description: String? = null) {
         val todo = Todo(id = UUID.randomUUID().toString(), title = title, description = description)
+        // insert on room db
         dao.insertTodo(todo)
+        // insert on firestore db
         try {
             firestore.saveTodo(todo)
         } catch (e: Exception) {
@@ -23,7 +25,9 @@ class TodoRepo(
     }
 
     suspend fun updateTodo(todo: Todo) {
+        // update on room db
         dao.updateTodo(todo)
+        // update on firestore db
         try {
             firestore.saveTodo(todo)
         } catch (e: Exception) {
@@ -32,7 +36,9 @@ class TodoRepo(
     }
 
     suspend fun deleteTodo(todo: Todo) {
+        // delete on room db
         dao.deleteTodo(todo)
+        // delete on firestore db
         try {
             firestore.deleteTodoById(todo.id)
         } catch (e: Exception) {

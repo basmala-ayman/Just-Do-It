@@ -22,16 +22,4 @@ class FirestoreRepo {
         collection.document(id).delete().await()
     }
 
-    suspend fun loadAllTodos(): List<Todo> {
-        val snap = collection.get().await()
-        return snap.documents.mapNotNull { doc ->
-            val id = doc.id
-            val title = doc.getString("title") ?: return@mapNotNull null
-            val description = doc.getString("description")
-            val isDone = doc.getBoolean("isDone") ?: false
-            val time = doc.getLong("time") ?: System.currentTimeMillis()
-            Todo(id = id, title = title, description = description, isDone = isDone, time = time)
-        }
-    }
-
 }
